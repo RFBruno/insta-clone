@@ -5,16 +5,19 @@
     <form [formGroup]="formulario" (ngSubmit)="autenticar()">
       <div class="form-group my-3">
         <input 
+          required
           type="email" 
-          class="form-control" 
+          class="form-control {{!formulario.touched ? '' : formulario.controls.email.status === 'VALID' ? 'is-valid' : 'is-invalid'}}" 
           placeholder="E-mail"
           formControlName="email"
         >
       </div>
       <div class="form-group my-3">
         <input 
+          required
+          minlength="6"
           type="password"
-          class="form-control" 
+          class="form-control {{!formulario.touched ? '' : formulario.controls.senha.status === 'VALID' ? 'is-valid' : 'is-invalid'}}" 
           placeholder="Senha"
           formControlName="senha"
         >
@@ -25,7 +28,7 @@
     </form>
     <hr />
 
-    <p class="small text-danger text-center">O nome de usuário inserido não pertence a uma conta. Verifique seu nome de usuário e tente novamente.</p>
+    <p *ngIf="!loginValid && !formulario.pristine" class="small text-danger text-center">O nome de usuário inserido não pertence a uma conta. Verifique seu nome de usuário e tente novamente.</p>
 
   </div>
 </div>

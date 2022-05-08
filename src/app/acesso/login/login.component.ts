@@ -13,8 +13,10 @@ export class LoginComponent implements OnInit {
 
   public formulario: FormGroup = this.fb.group({
     email: [null, [Validators.email, Validators.required]],
-    senha: [null, [Validators.required]],
+    senha: [null, [Validators.required, Validators.minLength(6)]],
   });
+
+  public loginValid: boolean = false;
 
   constructor(
     private autenticacao: Autenticacao,
@@ -22,6 +24,7 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log(this.formulario);
   }
 
   public exibirPainelCadastro(): void {
@@ -29,12 +32,15 @@ export class LoginComponent implements OnInit {
   }
 
   public autenticar(): void{
+    this.formulario.markAsTouched();
+    console.log('autentica: ', this.formulario);
     this.autenticacao.autenticar(
       this.formulario.value.email,
       this.formulario.value.senha,
+    ).then(data =>{
+      this.loginValid = data;
+    })
 
-
-    );
   }
 
 }

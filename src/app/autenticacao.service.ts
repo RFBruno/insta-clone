@@ -40,16 +40,19 @@ export class Autenticacao {
             })
     }
 
-    public autenticar(email: string, senha: string): void{
-        signInWithEmailAndPassword(this.auth, email, senha)
+    public async autenticar(email: string, senha: string): Promise<boolean>{
+        await signInWithEmailAndPassword(this.auth, email, senha)
         .then((resp: any) =>{
             this.token_id = resp.user.accessToken;
             localStorage.setItem('idToken', this.token_id!);
             this.router.navigate(['home']);
+            return true;
         })
         .catch(err =>{
             console.log(err);
         });
+        
+        return false
     }
 
     public autenticado(): boolean{
