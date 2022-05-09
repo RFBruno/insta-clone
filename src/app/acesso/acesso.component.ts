@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 
 @Component({
   selector: 'app-acesso',
@@ -31,22 +31,45 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
         animate('.6s 0s ease-in-out') //(duracao delay aceleracao)
       ])
     ]),
+
+    trigger('animacao-atencao', [
+      state('start', style({
+        opacity: 1
+      })),
+      transition('* => start', [
+        animate('.3s 0s ease-in-out', keyframes([
+          style({ transform:'translateY(10px)'}),
+          style({ transform:'translateY(-10px)'}),
+          style({ transform:'translateY(10px)'}),
+          style({ transform:'translateY(-10px)'}),
+        ]))
+      ])
+    ])
   ]
 })
 export class AcessoComponent implements OnInit {
 
   public estadoBanner: string = 'criado';
   public estadoPainel: string = 'criado';
+  public estadoAtencao: string = '';
 
   public cadastro: boolean = false;
 
   constructor() { }
 
   ngOnInit(): void {
+    
   }
 
   public exibirPainelCadastro(event: string): void {
     this.cadastro = event === 'cadastro' ? true : false;
+  }
+
+  public animacaoErro(): void{
+    this.estadoAtencao = 'start'
+    setTimeout(() =>{
+      this.estadoAtencao = '';
+    },1000)
   }
 
 }

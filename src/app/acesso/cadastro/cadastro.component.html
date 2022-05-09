@@ -4,46 +4,57 @@
     
     <form [formGroup]="formulario" (ngSubmit)="cadastroUsuario()">
       <div class="form-group my-3">
-        <input 
+        <input
+          required 
           type="email" 
-          class="form-control" 
+          class="form-control {{ formulario.controls.email.pristine ? '' : formulario.controls.email.status === 'VALID' ? 'is-valid' : 'is-invalid' }}" 
           placeholder="E-mail"
           formControlName="email"
         >
       </div>
       <div class="form-group my-3">
-        <input 
+        <input
+          required 
           type="text"
-          class="form-control" 
+          class="form-control {{ formulario.controls.nome_completo.pristine ? '' : formulario.controls.nome_completo.status === 'VALID' ? 'is-valid' : 'is-invalid' }}" 
           placeholder="Nome completo"
           formControlName="nome_completo"
         >
       </div>
       <div class="form-group my-3">
-        <input 
+        <input
+          required 
           type="text"
-          class="form-control" 
+          class="form-control {{ formulario.controls.nome_usuario.pristine ? '' : formulario.controls.nome_usuario.status === 'VALID' ? 'is-valid' : 'is-invalid' }}" 
           placeholder="Nome de usuário"
           formControlName="nome_usuario"
         >
       </div>
       <div class="form-group my-3">
-        <input 
+        <input
+          required
+          minlength="6" 
           type="password"
-          class="form-control" 
+          class="form-control {{ formulario.controls.senha.pristine ? '' : formulario.controls.senha.status === 'VALID' ? 'is-valid' : 'is-invalid' }}" 
           placeholder="Senha"
           formControlName="senha"
         >
       </div>
       
       <div class="d-grid gap-2">
-        <button type="submit" class="btn btn-primary btn-sm">Cadastre-se</button>
+        <button type="submit" [disabled]="formulario.invalid" class="btn btn-primary btn-sm">Cadastre-se</button>
       </div>
+
+      <p *ngIf="!cadValid && !pristine" class="small text-center my-3 text-danger">
+        Erro no processo de cadastro.
+      </p>
+
 
     </form>
     <hr />
 
     <p class="small text-center">Ao cadastrar-se, você concorda com nossos <b>Termos</b> e <b>Política de Privacidade</b>.</p>
+
 
   </div>
 </div>

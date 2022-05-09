@@ -11,6 +11,7 @@ import { Usuario } from '../usuario.model';
 export class CadastroComponent implements OnInit {
 
   @Output() public exibirPainel: EventEmitter<string> = new EventEmitter<string>();
+  @Output() public erroCadastro: EventEmitter<boolean> =  new EventEmitter<boolean>();
 
   public formulario: FormGroup = this.fb.group({
     email: [null,[Validators.email, Validators.required]],
@@ -18,6 +19,9 @@ export class CadastroComponent implements OnInit {
     nome_usuario: [null, Validators.required],
     senha: [null, [Validators.required, Validators.minLength(8)]]
   })
+
+  public cadValid: boolean = false;
+  public pristine: boolean = true;
 
   constructor(
     public fb: FormBuilder,
@@ -40,7 +44,15 @@ export class CadastroComponent implements OnInit {
       this.formulario.value.senha
     );
 
-    this.autenticacao.cadastrarUsuario(usuario).then(() => this.exibirPainelLogin());
+    this.autenticacao.cadastrarUsuario(usuario).then((data) => {
+      this.cadValid = data;
+      this.pristine = false;
+      if(this.cadValid){
+        this.exibirPainelLogin();
+      }else{
+        this.erroCadastro.emit(true);
+      }
+    });
   }
 
 }

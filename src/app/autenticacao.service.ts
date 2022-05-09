@@ -21,7 +21,7 @@ export class Autenticacao {
     }
     
     
-    public cadastrarUsuario(usuario: Usuario): Promise<any>{
+    public cadastrarUsuario(usuario: Usuario): Promise<boolean>{
 
         return createUserWithEmailAndPassword(this.auth ,usuario.email, usuario.senha)
             .then((resposta: any) => {
@@ -33,11 +33,15 @@ export class Autenticacao {
                 }
 
                 set(ref(this.db, `usuario_detalhe/${btoa(usuario.email)}`), param);
+                
+                return true;
 
             })
             .catch((error: Error) => {
                 console.error('error :>',error);
+                return false;
             })
+
     }
 
     public async autenticar(email: string, senha: string): Promise<boolean>{
@@ -49,7 +53,7 @@ export class Autenticacao {
             return true;
         })
         .catch(err =>{
-            console.log(err);
+            console.error(err);
         });
         
         return false
@@ -74,7 +78,7 @@ export class Autenticacao {
             this.token_id = undefined;
             this.router.navigate(['/']);
         }).catch(err =>{
-            console.log(err);
+            console.error(err);
         });
     }
 }

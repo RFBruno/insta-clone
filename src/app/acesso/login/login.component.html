@@ -7,7 +7,7 @@
         <input 
           required
           type="email" 
-          class="form-control {{!formulario.touched ? '' : formulario.controls.email.status === 'VALID' ? 'is-valid' : 'is-invalid'}}" 
+          class="form-control {{pristine ? '' : this.loginValid ? 'is-valid' : 'is-invalid'}}" 
           placeholder="E-mail"
           formControlName="email"
         >
@@ -17,18 +17,18 @@
           required
           minlength="6"
           type="password"
-          class="form-control {{!formulario.touched ? '' : formulario.controls.senha.status === 'VALID' ? 'is-valid' : 'is-invalid'}}" 
+          class="form-control" 
           placeholder="Senha"
           formControlName="senha"
         >
       </div>
       <div class="d-grid gap-2">
-        <button type="submit" class="btn btn-primary btn-sm">Entrar</button>
+        <button type="submit" [disabled]="formulario.invalid" class="btn btn-primary btn-sm">Entrar</button>
       </div>
     </form>
     <hr />
 
-    <p *ngIf="!loginValid && !formulario.pristine" class="small text-danger text-center">O nome de usuário inserido não pertence a uma conta. Verifique seu nome de usuário e tente novamente.</p>
+    <p *ngIf="!loginValid && !pristine" class="small text-danger text-center">O nome de usuário inserido não pertence a uma conta. Verifique seu nome de usuário e tente novamente.</p>
 
   </div>
 </div>

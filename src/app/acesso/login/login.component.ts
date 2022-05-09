@@ -10,6 +10,7 @@ import { Autenticacao } from 'src/app/autenticacao.service';
 export class LoginComponent implements OnInit {
 
   @Output() public exibirPainel: EventEmitter<string> = new EventEmitter<string>();
+  @Output() public errorLogin: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public formulario: FormGroup = this.fb.group({
     email: [null, [Validators.email, Validators.required]],
@@ -17,6 +18,7 @@ export class LoginComponent implements OnInit {
   });
 
   public loginValid: boolean = false;
+  public pristine: boolean = true;
 
   constructor(
     private autenticacao: Autenticacao,
@@ -24,7 +26,6 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.formulario);
   }
 
   public exibirPainelCadastro(): void {
@@ -33,12 +34,14 @@ export class LoginComponent implements OnInit {
 
   public autenticar(): void{
     this.formulario.markAsTouched();
-    console.log('autentica: ', this.formulario);
     this.autenticacao.autenticar(
       this.formulario.value.email,
       this.formulario.value.senha,
     ).then(data =>{
       this.loginValid = data;
+      this.pristine = false;
+
+      this.errorLogin.emit(true);
     })
 
   }
