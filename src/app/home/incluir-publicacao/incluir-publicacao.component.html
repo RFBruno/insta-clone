@@ -1,5 +1,5 @@
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog" *ngIf="!status">
       <div class="modal-content">
           <form [formGroup]="formulario" (ngSubmit)="publicar()" >
               <div class="modal-header">
@@ -25,6 +25,35 @@
                 <button type="submit" class="btn btn-primary">Publicar</button>
               </div>
           </form>
+      </div>
+    </div>
+
+    <div class="modal-dialog" *ngIf="status === 'andamento'">
+      <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Publicação em andamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                {{estado}}%
+              </div>
+              <div class="modal-footer">
+              </div>
+          
+      </div>
+    </div>
+
+    <div class="modal-dialog" *ngIf="status === 'concluido'">
+      <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Publicação realizada com sucesso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Sua publicação foi realizada com sucesso !
+              </div>
+              <div class="modal-footer">
+              </div>
       </div>
     </div>
   </div>
