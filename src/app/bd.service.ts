@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 
-import { getDatabase, ref, push, set } from "firebase/database";
-import { getStorage, ref as refStorage, uploadBytes, uploadBytesResumable} from "firebase/storage";
+import { getDatabase, ref, push, set, onValue } from "firebase/database";
+import { getStorage, ref as refStorage, uploadBytesResumable, getDownloadURL} from "firebase/storage";
 import { Progresso } from "./progresso.service";
 
 @Injectable({
@@ -26,7 +26,7 @@ export class Bd{
             titulo: publicacao.titulo
         }).then((resposta:any)=>{
             
-            const nameImg =   `${newPostRef.key}-${Date.now()}`;
+            const nameImg =   `${newPostRef.key}`;
 
             const storageRef = refStorage(this.storage, `imagens/${nameImg}`);
 
@@ -46,6 +46,36 @@ export class Bd{
                 // Handle unsuccessful uploads
                 console.error('Imagem :>',error);
             },)
+        });
+    }
+
+    public consultaPublicacoes(email: string){
+
+        
+        const starCountRef = ref(this.db, 'publicacoes/' + btoa(email));
+        onValue(starCountRef, (snapshot) => {
+            let publicacoes: any[] = [];
+            
+            snapshot.forEach((chield:any) => {
+                let publicacao = chield.val();
+                
+                getDownloadURL(refStorage(this.storage, `imagens/${chield.key}`))
+                    .then((url) => {
+                        publicacao.url_imagem = url;
+
+                        onValue(ref(this.db, `usuario_detalhe/${btoa(email)}`), (snapshot) =>{
+                            const data = snapshot.val();
+                            publicacao.nome_usuario = data.nome_usuario;
+                        })
+
+                        publicacoes.push(publicacao);
+                    })
+                    .catch((error) => {
+                        console.error('CL ERRO :>',error);
+                    });
+            });
+
+            console.log('pubs :>', publicacoes);
         });
     }
 
