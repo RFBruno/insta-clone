@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Bd } from 'src/app/bd.service';
 
@@ -10,12 +10,15 @@ import { interval, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 
+
 @Component({
   selector: 'app-incluir-publicacao',
   templateUrl: './incluir-publicacao.component.html',
   styleUrls: ['./incluir-publicacao.component.css']
 })
 export class IncluirPublicacaoComponent implements OnInit {
+
+  @Output() atualizarTimeLine: EventEmitter<boolean> = new EventEmitter();
 
   public formulario: FormGroup = this.fb.group({
     titulo : [null]
@@ -41,7 +44,7 @@ export class IncluirPublicacaoComponent implements OnInit {
     })
   }
 
-  public publicar(): void {
+  public async publicar() {
     let publicacao = {
       email: this.email,
       titulo: this.formulario.value.titulo,
@@ -54,16 +57,19 @@ export class IncluirPublicacaoComponent implements OnInit {
 
     continua.next(true);
 
-    acompanhamentoUpload
+    await acompanhamentoUpload
       .pipe(takeUntil(continua))
       .subscribe(() =>{
         this.status = this.progresso.status;
         this.estado = this.progresso.estado;
         if(this.progresso.status === 'concluido'){
           continua.next(false);
+          setTimeout(() => {
+            this.atualizarTimeLine.emit(true);
+          },1000)
         }
       })
-  }
+    }
 
   public preparaImagemUpload(event: Event): void{
     this.imagem = (<HTMLInputElement>event.target).files![0];

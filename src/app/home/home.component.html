@@ -13,6 +13,6 @@
 
 <br /><br /><br />
 <div class="container">
-  <app-publicacoes></app-publicacoes>
-  <app-incluir-publicacao></app-incluir-publicacao>
+  <app-publicacoes #publicacoes></app-publicacoes>
+  <app-incluir-publicacao (atualizarTimeLine)="atualizarTimeLine($event)"></app-incluir-publicacao>
 </div>

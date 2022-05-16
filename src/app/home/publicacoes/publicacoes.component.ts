@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Bd } from 'src/app/bd.service';
 
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
@@ -9,9 +9,11 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
   templateUrl: './publicacoes.component.html',
   styleUrls: ['./publicacoes.component.css']
 })
-export class PublicacoesComponent implements OnInit {
+export class PublicacoesComponent implements OnInit{
+  
 
   public email: string | null = null;
+  public publicacoes: any[] | null = null;
 
   constructor(
     public bd : Bd
@@ -26,9 +28,12 @@ export class PublicacoesComponent implements OnInit {
       this.atualizarTimeLine();
     })
   }
-
+  
   public atualizarTimeLine(): void{
-    this.bd.consultaPublicacoes(this.email!);
+    this.bd.consultaPublicacoes(this.email!).then((publicacoes) =>{
+      this.publicacoes = publicacoes;
+      console.log(this.publicacoes);
+    });
   }
 
 }
