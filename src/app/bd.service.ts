@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
-
-import { getDatabase, ref, push, set, onValue } from "firebase/database";
+import { getDatabase, ref, push, set, onValue, orderByKey, query } from "firebase/database";
 import { getStorage, ref as refStorage, uploadBytesResumable, getDownloadURL} from "firebase/storage";
 import { Progresso } from "./progresso.service";
 
@@ -51,33 +50,37 @@ export class Bd{
 
     public consultaPublicacoes(email: string): Promise<any>{
 
-        return new Promise((resolve, reject) =>{
-            const starCountRef = ref(this.db, 'publicacoes/' + btoa(email));
-                onValue(starCountRef, (snapshot) => {
-                    let publicacoes: any[] = [];
-                    
-                    snapshot.forEach((chield:any) => {
-                        let publicacao = chield.val();
+        let publicacoes: any[] = [];
+
+        return new Promise(async (resolve, reject) =>{
+            const starCountRef = query(ref(this.db, 'publicacoes/' + btoa(email)) , orderByKey());
+                
+                    onValue(starCountRef, (snapshot) => {
                         
-                        getDownloadURL(refStorage(this.storage, `imagens/${chield.key}`))
+                        snapshot.forEach((chield:any) => {
+                            let publicacao = chield.val();
+                            publicacao.key = chield.key;
+    
+                            publicacoes.unshift(publicacao);
+                        });
+
+                        publicacoes.forEach(publicacao => {
+                            getDownloadURL(refStorage(this.storage, `imagens/${publicacao.key}`))
                             .then((url) => {
                                 publicacao.url_imagem = url;
-
+                
                                 onValue(ref(this.db, `usuario_detalhe/${btoa(email)}`), (snapshot) =>{
                                     const data = snapshot.val();
                                     publicacao.nome_usuario = data.nome_usuario;
                                 })
-
-                                publicacoes.push(publicacao);
                             })
                             .catch((error) => {
-                                reject(error);
-                            });
+                                console.error(error);
+                            })
+    
+                            resolve(publicacoes);
+                        });
                     });
-
-                    resolve(publicacoes);
-                });
-        });
+            })
     }
-
 }

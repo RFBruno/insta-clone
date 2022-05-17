@@ -30,8 +30,10 @@ export class PublicacoesComponent implements OnInit{
   }
   
   public atualizarTimeLine(): void{
+    console.log(this.email);
     this.bd.consultaPublicacoes(this.email!).then((publicacoes) =>{
       this.publicacoes = publicacoes;
+      console.log('teste',publicacoes);
       console.log(this.publicacoes);
     });
   }
